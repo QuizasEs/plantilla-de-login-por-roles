@@ -195,7 +195,7 @@ class userController extends userModel
             echo json_encode($alerta);
             exit();
         } else {
-            $password_hash = mainModel::encryption($password);
+            $password_hash = password_hash($password, PASSWORD_DEFAULT);
         };
 
         if ($rol < 1 || $rol > 3) {

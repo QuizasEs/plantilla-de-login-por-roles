@@ -3,19 +3,21 @@
         const toggle = document.querySelector('#darkModeToggleInput'); // el input real
         const body = document.querySelector('body');
 
-        load();
+        if (toggle) {
+            load();
 
-        // Detectar cambio de estado
-        toggle.addEventListener('change', () => {
-            body.classList.toggle('dark');
-            store(body.classList.contains('dark'));
-        });
+            // Detectar cambio de estado
+            toggle.addEventListener('change', () => {
+                body.classList.toggle('dark');
+                store(body.classList.contains('dark'));
+            });
+        }
 
         // Cargar estado guardado
         function load() {
             const darkmode = localStorage.getItem('dark') === 'true';
             body.classList.toggle('dark', darkmode);
-            toggle.checked = darkmode; // refleja el estado en el toggle
+            if (toggle) toggle.checked = darkmode; // refleja el estado en el toggle
         }
 
         // Guardar estado
@@ -43,54 +45,59 @@
         const hamburguesa = document.querySelector('.hamburguesa');
         const sidebar = document.querySelector('.sidebar');
 
-        hamburguesa.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-            
-            // Forzar el estado visible en móviles cuando se quita 'collapsed'
-            if (!sidebar.classList.contains('collapsed')) {
-                sidebar.style.transform = 'translateX(0)';
-                sidebar.style.width = '250px';
-                sidebar.style.padding = '10px 2px';
-            } else {
-                sidebar.style.transform = '';
-                sidebar.style.width = '';
-                sidebar.style.padding = '';
-                sidebar.style.border = '';
-            }
-        });
+        if (hamburguesa && sidebar) {
+            hamburguesa.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                
+                // Forzar el estado visible en móviles cuando se quita 'collapsed'
+                if (!sidebar.classList.contains('collapsed')) {
+                    sidebar.style.transform = 'translateX(0)';
+                    sidebar.style.width = '250px';
+                    sidebar.style.padding = '10px 2px';
+                } else {
+                    sidebar.style.transform = '';
+                    sidebar.style.width = '';
+                    sidebar.style.padding = '';
+                    sidebar.style.border = '';
+                }
+            });
+        }
     </script>
 
     <script type="text/javascript"> //crafica de ingresos y egresos 
         // Initialize the echarts instance based on the prepared dom
-        var myChart = echarts.init(document.getElementById('graphyc'));
+        var graphycDom = document.getElementById('graphyc');
+        if (graphycDom) {
+            var myChart = echarts.init(graphycDom);
 
-        // Specify the configuration items and data for the chart
-        var option = {
-            title: {
-                text: 'INGRESOS EGRESOS'
-            },
-            tooltip: {},
-            legend: {
-                data: ['sales']
-            },
-            xAxis: {
-                data: ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO']
-            },
-            yAxis: {},
-            series: [
-                {
-                    name: 'egresos',
-                    type: 'bar',
-                    data: [5, 25, 36, 10, 10, 34, 1]
-                },{
-                    name: 'ingresos',
-                    type: 'bar',
-                    data: [1, 20, 56, 10, 13, 20, 1]
-                }
-            ]
-        };
+            // Specify the configuration items and data for the chart
+            var option = {
+                title: {
+                    text: 'INGRESOS EGRESOS'
+                },
+                tooltip: {},
+                legend: {
+                    data: ['sales']
+                },
+                xAxis: {
+                    data: ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO']
+                },
+                yAxis: {},
+                series: [
+                    {
+                        name: 'egresos',
+                        type: 'bar',
+                        data: [5, 25, 36, 10, 10, 34, 1]
+                    },{
+                        name: 'ingresos',
+                        type: 'bar',
+                        data: [1, 20, 56, 10, 13, 20, 1]
+                    }
+                ]
+            };
 
-        // Display the chart using the configuration items and data just specified.
-        myChart.setOption(option);
+            // Display the chart using the configuration items and data just specified.
+            myChart.setOption(option);
+        }
     </script>
     <script src="<?php echo SERVER_URL; ?>views/script/alertas.js"></script>

@@ -11,9 +11,8 @@
 
         /* -------------------------------------Controlador para obtener dvistas------------------------------------------------- */
         public function get_views_controller(){
-            if(isset($_GET['views'])){
-                $ruta=explode("/", $_GET['views']);
-                $respuesta = viewsModel::get_views_model($ruta[0]);
+            if(isset($_GET['view'])){
+                $respuesta = viewsModel::get_views_model($_GET['view']);
             }else{
                 $respuesta = "login";
             }

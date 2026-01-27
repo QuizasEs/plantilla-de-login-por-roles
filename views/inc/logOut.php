@@ -17,8 +17,6 @@
                 confirmButtonText: 'Salir',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
-                /* alert("holis") */
-                /* debug */
                 if (result.isConfirmed) {
                     const url = '<?php echo SERVER_URL; ?>ajax/loginAjax.php';
                     const token = '<?php echo $lc->encryption($_SESSION['token_smp']); ?>';
@@ -27,13 +25,16 @@
                     const datos = new FormData();
                     datos.append("token", token);
                     datos.append("usuario", usuario);
+                    
                     Swal.fire({
-                        html: "I will close in <b></b> milliseconds.",
+                        html: "Cerrando sesión...",
                         timer: 2000,
                         timerProgressBar: true,
-                        didOpen: () => {Swal.showLoading()}
-                        
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
                     })
+                    
                     fetch(url, {
                             method: 'POST',
                             body: datos

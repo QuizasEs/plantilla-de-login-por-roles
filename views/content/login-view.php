@@ -9,10 +9,11 @@
                             <input type="text" name="Usuario_log" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ_]{3,100}" maxlength="100"  required>
                         </div>
                         <div class="bloque-login">
-                            <label for="" class="login">NOMBRE DE USUARIOS</label>
+                            <label for="" class="login">CONTRASEÑA</label>
                             <input type="password" name="Password_log" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9@$!%*?&._#\]{3,100}" maxlength="100"  required>
                         </div>
                         <button class="btn-primary">ACEPTAR</button>
+                        <a href="<?php echo SERVER_URL; ?>?view=reset" style="color: white; text-decoration: none;">¿Olvidaste tu contraseña?</a>
                     </form>
                 </div>
             </div>

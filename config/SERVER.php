@@ -1,7 +1,7 @@
 <?php
     /* Configuración inicial para la base de datos (local) */
     const SERVER = "localhost";
-    const DB = "samfarm_db";
+    const DB = "database";
     const USER = "root";
     const PASS = "";
 

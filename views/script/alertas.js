@@ -105,5 +105,22 @@ function alertas_ajax(alerta) {
         }).then(() => {
             window.location.href = alerta.URL;
         });
+    } else if (alerta.Alerta === "contador") {
+        let segundos = alerta.segundos || 3;
+        Swal.fire({
+            title: alerta.Titulo || "Redirigiendo...",
+            text: `Redirigiendo en ${segundos} segundos...`,
+            timer: segundos * 1000,
+            timerProgressBar: true,
+            didOpen: () => {
+                const timer = Swal.getPopup().querySelector('.swal2-timer-progress-bar');
+                if (timer) {
+                    timer.style.backgroundColor = '#3085d6';
+                }
+            },
+            willClose: () => {
+                window.location.href = alerta.URL;
+            }
+        });
     }
 }

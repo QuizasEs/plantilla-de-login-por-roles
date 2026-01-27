@@ -42,7 +42,7 @@ if (isset($_POST['Nombres_reg']) || isset($_POST['usuario_des']) || isset($_POST
     session_destroy();
 
     // Redirigimos al login principal
-    header("location: " . SERVER_URL . "login/");
+    echo "<script>window.location.href='" . SERVER_URL . "?view=login';</script>";
 
     // Enviamos una respuesta JSON para notificar el error al frontend
     echo json_encode([

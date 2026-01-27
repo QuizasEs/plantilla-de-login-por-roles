@@ -3,24 +3,25 @@
 
 <?php include "inc/head.php"; ?>
 
-
-<body class="darkmode">
-    <?php
+<?php
     $peticionAjax = false;
     require_once __DIR__ . "/../controllers/viewsController.php";
 
     $IV = new viewsController();
     $vistas = $IV->get_views_controller();
 
-    if ($vistas == "login" || $vistas == "404") {
+    if ($vistas == "login" || $vistas == "404" || $vistas == "reset"): ?>
+<body>
+<?php else: ?>
+<body class="dark">
+<?php endif; ?>
+
+    <?php if ($vistas == "login" || $vistas == "404" || $vistas == "reset") {
         require_once "./views/content/" . $vistas . "-view.php";
     } else {
         /* inicializa sesion */
         session_start(['name' => 'SMP']);
         include_once "inc/header.php";
-        
-        /* dividir cadenas por "/"" */
-        $pagina = explode("/", $_GET['views']);
 
         require_once "./controllers/loginController.php";
         $lc = new loginController();
@@ -59,17 +60,13 @@
         <!---------------- -----------------------------Script--------------------------------------------------->
 
     <?php
-
+        include_once "inc/logOut.php";
     }
-    include_once "inc/logOut.php";
     include_once "inc/script.php";
 
 
     include_once "inc/footer.php";
     ?>
-
-
-
 
 </body>
 

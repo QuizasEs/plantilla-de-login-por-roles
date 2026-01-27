@@ -1,6 +1,6 @@
 <?php
     /* direccion del proyecto en local "cambiar una ves subido al servidor" */
-    const SERVER_URL="http://localhost/samfarm/";
+    const SERVER_URL="http://localhost/plantilla-de-login-por-roles/";
     /* NOMPRE DE LA EMPRESA QUE SERA VISIBLE EN EL SERVIDOR */
     const COMPANY = "SAMFARM";
     /* MONEDA QUE SE TRABAJARA DENTRO DEL SISTEMA */

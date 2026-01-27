@@ -79,7 +79,8 @@ class loginController extends loginModel
             /*$_SESSION[''] = $row[''];
             $_SESSION[''] = $row['']; */
             $_SESSION['token_smp'] = md5(uniqid(mt_rand(), true));
-            return header("Location: " . SERVER_URL . "dashboard/");
+            echo "<script>window.location.href='" . SERVER_URL . "?view=dashboard';</script>";
+            exit();
         } else {
             echo '
                     <script>
@@ -100,11 +101,8 @@ class loginController extends loginModel
     {
         session_unset();
         session_destroy();
-        if (headers_sent()) {
-            return "<script>window.location.href='" . SERVER_URL . "login/';</script>";
-        } else {
-            return header("Location: " . SERVER_URL . "login/");
-        }
+        echo "<script>window.location.href='" . SERVER_URL . "?view=login';</script>";
+        exit();
     }
     /* controlador que nos permite secarra secion */
     public function cerrar_sesion_controller()
@@ -118,7 +116,7 @@ class loginController extends loginModel
             session_destroy();
             $alerta = [
                 "Alerta" => "redireccionar",
-                "URL" => SERVER_URL . "login/",
+                "URL" => SERVER_URL . "?view=login",
             ];
         } else {
             $alerta = [

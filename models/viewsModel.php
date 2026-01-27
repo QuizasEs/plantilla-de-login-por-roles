@@ -19,10 +19,14 @@
                     /* si no mandamos ERROR */
                     $contenido = "404";
                 }
-            } elseif($vistas=="login" || $vistas=="index"){
+            } elseif($vistas=="login" || $vistas=="index" || $vistas=="reset"){
                 /* preguntamos que si la vista a la que se esta intentado ingresar es login o index*/
                 /* SI es cuialquiera de estas 2 entonces devolvemos login */
-                $contenido = "login";
+                if($vistas=="reset"){
+                    $contenido = "reset";
+                }else{
+                    $contenido = "login";
+                }
 
                 /* si la vista a la que se intenta acceder esta fuera de la lista de vistas permitidas votar ERROR */
             } else{

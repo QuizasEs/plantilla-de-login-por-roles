@@ -14,7 +14,7 @@ if (isset($_POST['token']) && isset($_POST['usuario'])) {
     session_start(['name' => 'SMP']);
     session_unset();
     session_destroy();
-    header("Location: " . SERVER_URL . "login/");
+    echo "<script>window.location.href='" . SERVER_URL . "?view=login';</script>";
     exit();
 }
     

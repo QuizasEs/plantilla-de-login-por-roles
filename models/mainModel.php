@@ -1,10 +1,9 @@
 <?php
 /* preguntamos si se realiza una peticion ajax o no */
-if ($peticionAjax) {
-    require_once "../config/SERVER.php";
-} else {
-    require_once "./config/SERVER.php";
+if (!isset($peticionAjax)) {
+    $peticionAjax = false;
 }
+require_once __DIR__ . "/../config/SERVER.php";
 
 /* -------------------------------------------------clase principal main model------------------------------------- */
 class mainModel
@@ -14,7 +13,7 @@ class mainModel
     protected static function Conectar()
     {
         try {
-            $conexion = new PDO(SGBD . ";charset=utf8", USER, PASS);
+            $conexion = new PDO(SGBD . ";charset=utf8mb4", USER, PASS);
             $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $conexion;
         } catch (PDOException $e) {
