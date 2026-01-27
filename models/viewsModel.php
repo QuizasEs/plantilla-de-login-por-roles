@@ -19,11 +19,13 @@
                     /* si no mandamos ERROR */
                     $contenido = "404";
                 }
-            } elseif($vistas=="login" || $vistas=="index" || $vistas=="reset"){
+            } elseif($vistas=="login" || $vistas=="index" || $vistas=="reset" || $vistas=="home"){
                 /* preguntamos que si la vista a la que se esta intentado ingresar es login o index*/
                 /* SI es cuialquiera de estas 2 entonces devolvemos login */
                 if($vistas=="reset"){
                     $contenido = "reset";
+                }elseif($vistas=="home" || $vistas=="index"){
+                    $contenido = "home";
                 }else{
                     $contenido = "login";
                 }

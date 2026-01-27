@@ -3,8 +3,6 @@
                 <h1>dashboard</h1>
             </div>
 
-            <?php if ($_SESSION['rol_smp'] == 1) {?>
-
             <!-- enlaces directos o acrotadores mas usados -->
             <div class="direct-link">
                 <div class="container-direct-links">
@@ -85,7 +83,6 @@
                     </div>
                 </div>
             </div>
-            <?php }?>
 
             <!-- resumende las compras del año actual -->
             <div class="sub-title">

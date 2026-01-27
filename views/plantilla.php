@@ -10,14 +10,18 @@
     $IV = new viewsController();
     $vistas = $IV->get_views_controller();
 
-    if ($vistas == "login" || $vistas == "404" || $vistas == "reset"): ?>
+    if ($vistas == "login" || $vistas == "404" || $vistas == "reset" || $vistas == "home"): ?>
 <body>
 <?php else: ?>
 <body class="dark">
 <?php endif; ?>
 
-    <?php if ($vistas == "login" || $vistas == "404" || $vistas == "reset") {
-        require_once "./views/content/" . $vistas . "-view.php";
+    <?php if ($vistas == "login" || $vistas == "404" || $vistas == "reset" || $vistas == "home") {
+        if($vistas == "home"){
+            require_once "./views/content/home-view.php";
+        }else{
+            require_once "./views/content/" . $vistas . "-view.php";
+        }
     } else {
         /* inicializa sesion */
         session_start(['name' => 'SMP']);
@@ -41,14 +45,12 @@
             <?php include_once "inc/sidebar.php"; ?>
             <!---------------------------------------------Cuerpo principal--------------------------------------------------->
             <?php 
-            if ($_SESSION['rol_smp'] == 1) {
-                /* iniciamos controller usuario si se tenen el privilegio necesario */
-                require_once "./controllers/userController.php";
-                $ins_usuario = new userController();
-            }
+            /* iniciamos controller usuario */
+            require_once "./controllers/userController.php";
+            $ins_usuario = new userController();
             ?>
             <div class="main-content">
-                <!--------------------------------------------- contenido de platillas y vistas--------------------------------------------------->
+            <!--------------------------------------------- contenido de platillas y vistas--------------------------------------------------->
                 <?php include_once $vistas; ?>
 
 

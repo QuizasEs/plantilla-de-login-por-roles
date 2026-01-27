@@ -14,7 +14,7 @@
             if(isset($_GET['view'])){
                 $respuesta = viewsModel::get_views_model($_GET['view']);
             }else{
-                $respuesta = "login";
+                $respuesta = "home";
             }
             return $respuesta;
         }

@@ -199,31 +199,6 @@ INSERT INTO `productos` (`pr_id`, `pr_codigo_sku`, `pr_nombre`, `pr_precio_unita
 (1, 'SKU-001', 'Paracetamol 500mg - 20 comprimidos', '5.50', '50.00', 1, 1, '2025-10-12 23:00:54', '2025-10-12 23:00:54', 1),
 (2, 'SKU-002', 'Multivitamínico 30 caps', '12.00', '120.00', 2, 2, '2025-10-12 23:00:54', '2025-10-12 23:00:54', 1);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `roles`
---
-
-CREATE TABLE `roles` (
-  `ro_id` bigint(20) UNSIGNED NOT NULL,
-  `ro_nombre` varchar(50) NOT NULL,
-  `ro_descripcion` text DEFAULT NULL,
-  `ro_creado_en` datetime NOT NULL DEFAULT current_timestamp(),
-  `ro_actualizado_en` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `ro_estado` tinyint(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `roles`
---
-
-INSERT INTO `roles` (`ro_id`, `ro_nombre`, `ro_descripcion`, `ro_creado_en`, `ro_actualizado_en`, `ro_estado`) VALUES
-(1, 'admin', 'Administrador del sistema con todos los permisos', '2025-10-12 23:00:54', '2025-10-12 23:00:54', 1),
-(2, 'gerente', 'Gerente de sucursal', '2025-10-12 23:00:54', '2025-10-12 23:00:54', 1),
-(3, 'vendedor', 'Usuario de caja / ventas', '2025-10-12 23:00:54', '2025-10-12 23:00:54', 1);
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `sucursales`
@@ -349,13 +324,6 @@ ALTER TABLE `productos`
   ADD KEY `ix_pr_codigo_nombre` (`pr_codigo_sku`,`pr_nombre`);
 
 --
--- Indexes for table `roles`
---
-ALTER TABLE `roles`
-  ADD PRIMARY KEY (`ro_id`),
-  ADD UNIQUE KEY `ro_nombre` (`ro_nombre`);
-
---
 -- Indexes for table `sucursales`
 --
 ALTER TABLE `sucursales`
@@ -369,8 +337,7 @@ ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`us_id`),
   ADD UNIQUE KEY `ux_usuarios_username` (`us_username`),
   ADD UNIQUE KEY `ux_usuarios_correo` (`us_correo`),
-  ADD KEY `fk_usuarios_sucursales` (`su_id`),
-  ADD KEY `fk_usuarios_roles` (`ro_id`);
+  ADD KEY `fk_usuarios_sucursales` (`su_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -417,12 +384,6 @@ ALTER TABLE `laboratorios`
 --
 ALTER TABLE `productos`
   MODIFY `pr_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `roles`
---
-ALTER TABLE `roles`
-  MODIFY `ro_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `sucursales`
@@ -473,7 +434,6 @@ ALTER TABLE `productos`
 -- Constraints for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD CONSTRAINT `fk_usuarios_roles` FOREIGN KEY (`ro_id`) REFERENCES `roles` (`ro_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_usuarios_sucursales` FOREIGN KEY (`su_id`) REFERENCES `sucursales` (`su_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
