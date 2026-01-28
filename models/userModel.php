@@ -12,62 +12,30 @@ class userModel extends mainModel
         $sql = mainModel::conectar()->prepare("
         INSERT INTO usuarios(
             us_nombres, 
-            us_apellido_paterno, 
-            us_apellido_materno, 
-            us_numero_carnet, 
-            us_telefono, 
+            us_apellidos, 
             us_correo, 
-            us_direccion, 
             us_username, 
-            us_password_hash, 
-            su_id, 
-            ro_id
+            us_password_hash
         ) VALUES(
             :nombres, 
-            :apellido_paterno, 
-            :apellido_materno, 
-            :carnet, 
-            :telefono, 
+            :apellidos, 
             :correo, 
-            :direccion, 
             :username, 
-            :password, 
-            :sucursal, 
-            :rol
+            :password
         )
     ");
 
         $sql->bindParam(":nombres", $datos['Nombres']);
-        $sql->bindParam(":apellido_paterno", $datos['ApellidoPaterno']);
-        $sql->bindParam(":apellido_materno", $datos['ApellidoMaterno']);
-        $sql->bindParam(":carnet", $datos['Carnet']);
-        $sql->bindParam(":telefono", $datos['Telefono']);
+        $sql->bindParam(":apellidos", $datos['Apellidos']);
         $sql->bindParam(":correo", $datos['Correo']);
-        $sql->bindParam(":direccion", $datos['Direccion']);
         $sql->bindParam(":username", $datos['UsuarioName']);
         $sql->bindParam(":password", $datos['Password']);
-        $sql->bindParam(":sucursal", $datos['Sucursal']);
-        $sql->bindParam(":rol", $datos['Rol']);
 
         $sql->execute();
         return $sql;
     }
 
     /* -------------------------------desabilitar usuario usuario----------------------------------- */
-    protected static function disable_user_model($id)
-    {
-        /* preparamos el update */
-        $sql = mainModel::Conectar()->prepare("UPDATE usuarios SET us_estado = '0' WHERE us_id = :ID");
-
-        /* asignamos el valor a reemplazar */
-        $sql->bindParam(":ID", $id, PDO::PARAM_INT);
-
-        /* ejecutamos */
-        $sql->execute();
-
-        /* retornamos */
-        return $sql;
-    }
 
     /* ------------------------------ obtener datos de usuario----------------------------------- */
 
@@ -95,31 +63,17 @@ class userModel extends mainModel
         $sql = mainModel::conectar()->prepare("UPDATE usuarios 
         SET 
         us_nombres = :nombres, 
-        us_apellido_paterno = :apellido_paterno,
-        us_apellido_materno = :apellido_materno,
-        us_numero_carnet = :carnet,
-        us_telefono = :telefono,
-        us_correo  = :correo,
-        us_direccion = :direccion,
+        us_apellidos = :apellidos,
+        us_correo = :correo,
         us_username = :username,
-        us_password_hash = :password,
-        us_estado = :estado,
-        su_id = :sucursal,
-        ro_id = :rol
+        us_password_hash = :password
         WHERE us_id = :id
         ");
         $sql->bindParam(":nombres", $datos['Nombres']);
-        $sql->bindParam(":apellido_paterno", $datos['ApellidoPaterno']);
-        $sql->bindParam(":apellido_materno", $datos['ApellidoMaterno']);
-        $sql->bindParam(":carnet", $datos['Carnet']);
-        $sql->bindParam(":telefono", $datos['Telefono']);
+        $sql->bindParam(":apellidos", $datos['Apellidos']);
         $sql->bindParam(":correo", $datos['Correo']);
-        $sql->bindParam(":direccion", $datos['Direccion']);
         $sql->bindParam(":username", $datos['UsuarioName']);
         $sql->bindParam(":password", $datos['Password']);
-        $sql->bindParam(":estado", $datos['Estado']);
-        $sql->bindParam(":sucursal", $datos['Sucursal']);
-        $sql->bindParam(":rol", $datos['Rol']);
         $sql->bindParam(":id", $datos['Id']);
         $sql->execute();
         return $sql;

@@ -13,13 +13,8 @@ class userController extends userModel
     {
         /* datos personales */
         $nombres = mainModel::limpiar_cadena($_POST['Nombres_reg']);
-        $apellido_paterno = mainModel::limpiar_cadena($_POST['ApellidoPaterno_reg']);
-        $apellido_materno = mainModel::limpiar_cadena($_POST['ApellidoMaterno_reg']);
-        $carnet =   mainModel::limpiar_cadena($_POST['Carnet_reg']);
-        $telefono =  mainModel::limpiar_cadena($_POST['Telefono_reg']);
+        $apellidos = mainModel::limpiar_cadena($_POST['Apellidos_reg']);
         $correo = mainModel::limpiar_cadena($_POST['Correo_reg']);
-        $direccion = mainModel::limpiar_cadena($_POST['Direccion_reg']);
-
 
         /* datos de usuario */
         $usuarioName = mainModel::limpiar_cadena($_POST['UsuarioName_reg']);
@@ -35,7 +30,7 @@ class userController extends userModel
 
 
         /* comprobar que los campos obligatorios no esten vacios */
-        if ($nombres == "" || $apellido_paterno == "" || $apellido_materno == "" || $carnet == "" || $usuarioName == "" || $password == "" || $password_confirm == "" || $sucursal == "" || $rol == "") {
+        if ($nombres == "" || $apellidos == "" || $usuarioName == "") {
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "ocurrio un error inesperado",
@@ -49,64 +44,29 @@ class userController extends userModel
 
         /* verificar la integridad de los datos (patern) */
         /* nombres */
-        if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,100}", $nombres)) {
+        if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,120}", $nombres)) {
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "ocurrio un error inesperado",
-                "texto" => "El NOMBRE no coincide con el formato solicitado!",
+                "texto" => "Los NOMBRES no coinciden con el formato solicitado!",
                 "Tipo" => "error"
             ];
             echo json_encode($alerta);
             exit();
         };
-        /* apellido paterno */
-        if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,100}", $apellido_paterno)) {
+        /* apellidos */
+        if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,200}", $apellidos)) {
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "ocurrio un error inesperado",
-                "texto" => "El APELLIDO PATERNO no coincide con el formato solicitado!",
+                "texto" => "Los APELLIDOS no coinciden con el formato solicitado!",
                 "Tipo" => "error"
             ];
             echo json_encode($alerta);
             exit();
-        };
-        /* apellido materno */
-        if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,100}", $apellido_materno)) {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "ocurrio un error inesperado",
-                "texto" => "El APELLIDO MATERNO no coincide con el formato solicitado!",
-                "Tipo" => "error"
-            ];
-            echo json_encode($alerta);
-            exit();
-        };
-        /* numero de carnet */
-        if (mainModel::verificar_datos("[0-9]{6,20}", $carnet)) {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "ocurrio un error inesperado",
-                "texto" => "El Carnet no coincide con el formato solicitado!",
-                "Tipo" => "error"
-            ];
-            echo json_encode($alerta);
-            exit();
-        };
-        /* telefono vacio */
-        if ($telefono != "") {
-            if (mainModel::verificar_datos("[0-9]{6,20}", $telefono)) {
-                $alerta = [
-                    "Alerta" => "simple",
-                    "Titulo" => "ocurrio un error inesperado",
-                    "texto" => "El Telefono no coincide con el formato solicitado!",
-                    "Tipo" => "error"
-                ];
-                echo json_encode($alerta);
-                exit();
-            };
         };
         /* nombre de usaurio */
-        if (mainModel::verificar_datos("^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ_]{3,100}$", $usuarioName)) {
+        if (mainModel::verificar_datos("^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ_]{3,80}$", $usuarioName)) {
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "ocurrio un error inesperado",
@@ -118,13 +78,13 @@ class userController extends userModel
         };
         /* contraseñas */
         if (
-            mainModel::verificar_datos("[A-Za-zÁÉÍÓÚáéíóúÑñ0-9@$!%*?&._#]{3,100}", $password) ||
-            mainModel::verificar_datos("[A-Za-zÁÉÍÓÚáéíóúÑñ0-9@$!%*?&._#]{3,100}", $password_confirm)
+            mainModel::verificar_datos("[A-Za-zÁÉÍÓÚáéíóúÑñ0-9@$!%*?&._#\]{3,255}", $password) ||
+            mainModel::verificar_datos("[A-Za-zÁÉÍÓÚáéíóúÑñ0-9@$!%*?&._#\]{3,255}", $password_confirm)
         ) {
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "ocurrio un error inesperado",
-                "texto" => "Las Contraseñas no coincide con el formato solicitado!",
+                "texto" => "Las Contraseñas no coinciden con el formato solicitado!",
                 "Tipo" => "error"
             ];
             echo json_encode($alerta);
@@ -133,18 +93,6 @@ class userController extends userModel
 
 
         /* comprobar que no hayan datos repetidos  */
-        /* carnet */
-        $check_carnet = mainModel::ejecutar_consulta_simple("SELECT us_numero_carnet FROM usuarios WHERE us_numero_carnet = '$carnet'");
-        if ($check_carnet->rowCount() > 0) {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "ocurrio un error inesperado",
-                "texto" => "El NUMERO DE CARNET ya se encuentra registrado, por favor ingrese otro!",
-                "Tipo" => "error"
-            ];
-            echo json_encode($alerta);
-            exit();
-        };
         /* nombre de usuario */
         $check_usuario = mainModel::ejecutar_consulta_simple("SELECT us_username FROM usuarios WHERE us_username = '$usuarioName'");
         if ($check_usuario->rowCount() > 0) {
@@ -198,28 +146,12 @@ class userController extends userModel
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
         };
 
-        if ($rol < 1 || $rol > 3) {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "ocurrio un error inesperado",
-                "texto" => "El ROL seleccionado no es valido!",
-                "Tipo" => "error"
-            ];
-            echo json_encode($alerta);
-            exit();
-        };
         $datos_usuario_reg = [
             "Nombres" => $nombres,
-            "ApellidoPaterno" => $apellido_paterno,
-            "ApellidoMaterno" => $apellido_materno,
-            "Carnet" => $carnet,
-            "Telefono" => $telefono,
+            "Apellidos" => $apellidos,
             "Correo" => $correo,
-            "Direccion" => $direccion,
             "UsuarioName" => $usuarioName,
-            "Password" => $password_hash,
-            "Sucursal" => $sucursal,
-            "Rol" => $rol
+            "Password" => $password_hash
         ];
         $agregar_usuario = userModel::agregar_usuario_modelo($datos_usuario_reg);
 
@@ -266,24 +198,16 @@ class userController extends userModel
             $consulta = "
                 SELECT 
                     SQL_CALC_FOUND_ROWS 
-                    u.*, 
-                    r.ro_nombre AS rol_nombre, 
-                    s.su_nombre AS sucursal_nombre
+                    u.*
                 FROM usuarios AS u
-                LEFT JOIN roles AS r ON u.ro_id = r.ro_id
-                LEFT JOIN sucursales AS s ON u.su_id = s.su_id
                 WHERE (u.us_id != '$id' AND u.us_id != '5')
                 AND (
-                    u.us_numero_carnet LIKE '%$busqueda%' OR
                     u.us_nombres LIKE '%$busqueda%' OR
-                    u.us_apellido_paterno LIKE '%$busqueda%' OR
-                    u.us_apellido_materno LIKE '%$busqueda%' OR
+                    u.us_apellidos LIKE '%$busqueda%' OR
                     u.us_telefono LIKE '%$busqueda%' OR
                     u.us_correo LIKE '%$busqueda%' OR
                     u.us_direccion LIKE '%$busqueda%' OR
-                    u.us_username LIKE '%$busqueda%' OR
-                    r.ro_nombre LIKE '%$busqueda%' OR
-                    s.su_nombre LIKE '%$busqueda%'
+                    u.us_username LIKE '%$busqueda%'
                 )
                 ORDER BY u.us_nombres ASC 
                 LIMIT $inicio, $registros
@@ -293,12 +217,8 @@ class userController extends userModel
             $consulta = "
                 SELECT 
                     SQL_CALC_FOUND_ROWS 
-                    u.*, 
-                    r.ro_nombre AS rol_nombre, 
-                    s.su_nombre AS sucursal_nombre
+                    u.*
                 FROM usuarios AS u
-                LEFT JOIN roles AS r ON u.ro_id = r.ro_id
-                LEFT JOIN sucursales AS s ON u.su_id = s.su_id
                 WHERE u.us_id != '$id' 
                 AND u.us_id != '5'
                 ORDER BY u.us_nombres ASC 
@@ -328,16 +248,12 @@ class userController extends userModel
                                 <th>NOMBRES</th>
                                 <th>APELLIDO PATERNO</th>
                                 <th>APELLIDO MATERMNO</th>
-                                <th>N° CARNET</th>
-                                <th>N° TELEFONO</th>
-                                <th>CORREO</th>
-                                <th>DIRECCION</th>
-                                <th>NOMBRE DE USUARIO</th>
-                                <th>CREADO EN</th>
-                                <th>ACTUALIZADO EN</th>
-                                <th>ROL</th>
-                                <th>SUCURSAL</th>
-                                <th>ESTADO</th>
+                        <th>TELEFONO</th>
+                        <th>CORREO</th>
+                        <th>DIRECCION</th>
+                        <th>NOMBRE DE USUARIO</th>
+                        <th>CREADO EN</th>
+                        <th>ACTUALIZADO EN</th>
                                 <th>
                                     ACCIONES
                                 </th>
@@ -354,29 +270,14 @@ class userController extends userModel
                     <tr>
                         <td>' . $contador . '</td>
                         <td>' . $rows["us_nombres"] . '</td>
-                        <td>' . $rows["us_apellido_paterno"] . '</td>
-                        <td>' . $rows["us_apellido_materno"] . '</td>
-                        <td>' . $rows["us_numero_carnet"] . '</td>
+                        <td>' . $rows["us_apellidos"] . '</td>
                         <td>' . $rows["us_telefono"] . '</td>
                         <td>' . $rows["us_correo"] . '</td>
                         <td>' . $rows["us_direccion"] . '</td>
                         <td>' . $rows["us_username"] . '</td>
                         <td>' . $rows["us_creado_en"] . '</td>
                         <td>' . $rows["us_actualizado_en"] . '</td>
-                        <td>' . $rows["rol_nombre"] . '</td>
-                        <td>' . $rows["sucursal_nombre"] . '</td>
-                        <td>' . ($rows["us_estado"] == 1 ? '<span class="active">Activo</span>' : '<span class="in-active">Inactivo</span>') . '</td>
-                        <td><a href="' . SERVER_URL . 'usuarioActualizar/' . mainModel::encryption($rows['us_id']) . '/" class="btn-editar">Editar</a>
-                            ' .
-                    ($rows["us_estado"] == 1
-                        /* POR VERDAD */
-                        ? '<form action="' . SERVER_URL . 'ajax/userAjax.php" class="FormularioAjax" method="POST" data-form="disable" autocomplete="off">
-                                        <input type="hidden" value="' . mainModel::encryption($rows['us_id']) . '" name="usuario_des">
-                                        <button type="submit" class="btn-disable">Deshabilitar</button>
-                                </form>'
-                        /* POR FALSEO NO MUESTRA NADA */
-                        : '') . '
-                        </td>
+                        <td><a href="' . SERVER_URL . 'usuarioActualizar/' . mainModel::encryption($rows['us_id']) . '/" class="btn-editar">Editar</a></td>
                     </tr>
                 ';
                 $contador++;
@@ -430,97 +331,17 @@ class userController extends userModel
             exit();
         }
 
-        /* el id de ussuario debe existir dentro de la base de datos */
-        $check_id = mainModel::ejecutar_consulta_simple("SELECT * FROM usuarios WHERE us_id = '$id'");
-        if ($check_id->rowCount() <= 0) {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "ocurrio un error inesperado",
-                "texto" => "La ID de usuario no existe dentro de la base de datos!",
-                "Tipo" => "error"
-            ];
-            echo json_encode($alerta);
-            exit();
-        }
-        /* para verificar que el usuario no tenga pendientes podemos reutilizar este codigo cambiando algunos parametros */
-
-        /* $check_id = mainModel::ejecutar_consulta_simple("SELECT * FROM usuarios WHERE us_id = '$id'");
-            if ($check_id->rowCount() > 0) {
-                $alerta = [
-                    "Alerta" => "simple",
-                    "Titulo" => "ocurrio un error inesperado",
-                    "texto" => "La ID de usuario no existe dentro de la base de datos!",
-                    "Tipo" => "error"
-                ];
-                echo json_encode($alerta);
-                exit();
-            }
-        } */
-        /* preguntamos quien realiza las consultas tiene los privilegios necesarios para desabilitar usuario */
-        session_start(['name' => 'SMP']);
-        if ($_SESSION['rol_smp'] != 1) {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "ocurrio un error inesperado",
-                "texto" => "No cuenta con los permisos necesarios para ejecutar esta accion!",
-                "Tipo" => "error"
-            ];
-            echo json_encode($alerta);
-            exit();
-        }
-
-        /* ejecutar modelo para desabilitar */
-        $desabilitar_usuario = userModel::disable_user_model($id);
-        /* comprobamos si se ejecuto correctamente este metodo */
-        if ($desabilitar_usuario->rowCount() == 1) {
-            $alerta = [
-                "Alerta" => "recargar",
-                "Titulo" => "Completado",
-                "texto" => "Usuario deshabilitado exitosamente!",
-                "Tipo" => "success"
-            ];
-        } else {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "Ocurrió un error inesperado",
-                "texto" => "No se pudo deshabilitar el usuario, por favor intente nuevamente más tarde!",
-                "Tipo" => "error"
-            ];
-        }
-
+        $alerta = [
+            "Alerta" => "simple",
+            "Titulo" => "ocurrio un error inesperado",
+            "texto" => "La función de deshabilitar usuarios ha sido eliminada en esta versión del sistema!",
+            "Tipo" => "error"
+        ];
         echo json_encode($alerta);
+        exit();
     }
 
 
-    /* -----------------------------------controlador para recabard datos de usuarios------------------------------------------ */
-
-    public function data_user_controller($tipo, $id)
-    {
-        $tipo = mainModel::limpiar_cadena($tipo);
-        $id = mainModel::decryption($id);
-        $id = mainModel::limpiar_cadena($id);
-
-        return userModel::data_user_model($tipo, $id);
-    }
-    /* -----------------------------------controlador para recabard datos de usuarios roles------------------------------------------ */
-
-    public function data_rol_list_controller($tipo, $id)
-    {
-        $tipo = mainModel::limpiar_cadena($tipo);
-        $id = mainModel::decryption($id);
-        $id = mainModel::limpiar_cadena($id);
-
-        return mainModel::data_rol_list_model($tipo, $id);
-    }
-    /* -----------------------------------controlador para recabar datos de usuarios sucursales------------------------------------------ */
-    public function data_sucursal_list_controller($tipo, $id)
-    {
-        $tipo = mainModel::limpiar_cadena($tipo);
-        $id = mainModel::decryption($id);
-        $id = mainModel::limpiar_cadena($id);
-
-        return mainModel::data_sucursal_list_model($tipo, $id);
-    }
 
     /* -----------------------------------controlador para actualizar datos de usuarios------------------------------------------ */
     public function data_update_user_controller()
@@ -528,28 +349,11 @@ class userController extends userModel
         
         $id = mainModel::decryption($_POST['usuario_id_up']);
         $id = mainModel::limpiar_cadena($id);
-        /* comprobamos laexistencia de id usuario dentro de la base de datos */
-        $check_id = mainModel::ejecutar_consulta_simple("SELECT * FROM usuarios WHERE us_id = '$id'");
-        if ($check_id->rowCount() <= 0) {
-            /* no se encontro ningun registro */
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "ocurrio un error inesperado",
-                "texto" => "No se han encontrado el usuario a actualizar!",
-                "Tipo" => "error"
-            ];
-            echo json_encode($alerta);
-            exit();
-        } else {
-            /* si hay usuario  */
-            $campos = $check_id->fetch();
-        }
 
         /* asignamos los campos  del formulario*/
 
         $nombres = mainModel::limpiar_cadena($_POST['Nombres_up']);
-        $apellido_paterno = mainModel::limpiar_cadena($_POST['ApellidoPaterno_up']);
-        $apellido_materno = mainModel::limpiar_cadena($_POST['ApellidoMaterno_up']);
+        $apellidos = mainModel::limpiar_cadena($_POST['Apellidos_up']);
         $carnet = mainModel::limpiar_cadena($_POST['Carnet_up']);
         $telefono = mainModel::limpiar_cadena($_POST['Telefono_up']);
         $correo = mainModel::limpiar_cadena($_POST['Correo_up']);
@@ -558,38 +362,12 @@ class userController extends userModel
         /* campos de confirmacion de cambios */
         $username = mainModel::limpiar_cadena($_POST['UsuarioName_up']);
         $password = mainModel::limpiar_cadena($_POST['Password_up']);
-
-        /* apra estado */
-        if (isset($_POST['Estado_up'])) {
-            /* nuevo registro */
-            $estado = mainModel::limpiar_cadena($_POST['Estado_up']);
-        } else {
-            /* sin cambios (usando la informacion de la base de datos pre existente) */
-            $estado = $campos['us_estado'];
-        }
-        /* oara sucursal */
-        if (isset($_POST['Sucursal_up'])) {
-            /* nuevo registro */
-            $sucursal = mainModel::limpiar_cadena($_POST['Sucursal_up']);
-        } else {
-            /* usar de la base de datos */
-            $sucursal = $campos['su_id'];
-        }
-
-        /* para rol */
-        if (isset($_POST['Rol_up'])) {
-            /* nuevo */
-            $rol = mainModel::limpiar_cadena($_POST['Rol_up']);
-        } else {
-            /* viejo */
-            $rol = $campos['ro_id'];
-        }
         $admin_usuario = mainModel::limpiar_cadena($_POST['Usuario_confirm']);
         $admin_password = mainModel::limpiar_cadena($_POST['Password_confirm']);;
         $tipo_cuenta = mainModel::limpiar_cadena($_POST['Tipo_up']);
         /* verificamos que los campos obligatorios no esten vacios */
 
-        if ($nombres == "" || $apellido_paterno == "" || $apellido_materno == "" || $carnet == "" || $username == "" || $admin_usuario == "" || $admin_password == "") {
+        if ($nombres == "" || $apellidos == "" || $carnet == "" || $username == "" || $admin_usuario == "" || $admin_password == "") {
                 /* si algun campo esta basio */;
             $alerta = [
                 "Alerta" => "simple",
@@ -614,23 +392,12 @@ class userController extends userModel
             echo json_encode($alerta);
             exit();
         };
-        /* apellido paterno */
-        if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,100}", $apellido_paterno)) {
+        /* apellidos */
+        if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,100}", $apellidos)) {
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "ocurrio un error inesperado",
-                "texto" => "El APELLIDO PATERNO no coincide con el formato solicitado!",
-                "Tipo" => "error"
-            ];
-            echo json_encode($alerta);
-            exit();
-        };
-        /* apellido materno */
-        if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,100}", $apellido_materno)) {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "ocurrio un error inesperado",
-                "texto" => "El APELLIDO MATERNO no coincide con el formato solicitado!",
+                "texto" => "Los APELLIDOS no coinciden con el formato solicitado!",
                 "Tipo" => "error"
             ];
             echo json_encode($alerta);
@@ -696,83 +463,6 @@ class userController extends userModel
         $admin_password = mainModel::encryption($admin_password);
 
 
-        /* revisamos el rango de privilegios */
-        if ($rol < 1 || $rol > 3) {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "ocurrio un error inesperado",
-                "texto" => "Permiso equivocado!",
-                "Tipo" => "error"
-            ];
-            echo json_encode($alerta);
-            exit();
-        }
-        /* revisamos que elvalor de estado sea 1 o 0 no otros (evitamos manipuilacion por html) */
-        if ($estado != 1 && $estado != 0) {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "ocurrio un error inesperado",
-                "texto" => "No podemos procesar este estado!",
-                "Tipo" => "error"
-            ];
-            echo json_encode($alerta);
-            exit();
-        }
-        /* campos unicos */
-
-        if ($carnet != $campos['us_numero_carnet']) {
-            $check_carnet = mainModel::ejecutar_consulta_simple("SELECT * FROM usuarios WHERE us_numero_carnet = '$carnet'");
-            if ($check_carnet->rowCount() > 0) {
-                $alerta = [
-                    "Alerta" => "simple",
-                    "Titulo" => "ocurrio un error inesperado",
-                    "texto" => "El numero de carnet ya se encuentra registrado en sistema!",
-                    "Tipo" => "error"
-                ];
-                echo json_encode($alerta);
-                exit();
-            }
-        }
-        /* verificar si el usuario se esta repitiendo */
-        if ($username != $campos['us_username']) {
-            $check_usuario = mainModel::ejecutar_consulta_simple("SELECT * FROM usuarios WHERE us_username = '$username'");
-            if ($check_usuario->rowCount() > 0) {
-                $alerta = [
-                    "Alerta" => "simple",
-                    "Titulo" => "ocurrio un error inesperado",
-                    "texto" => "El nombre de usuario ya se encuentra registrado en sistema!",
-                    "Tipo" => "error"
-                ];
-                echo json_encode($alerta);
-                exit();
-            }
-        }
-
-        /* verificar correo */
-        if ($correo != $campos['us_correo'] && $correo != "") {
-            if (filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-                $check_correo = mainModel::ejecutar_consulta_simple("SELECT us_correo FROM usuarios WHERE us_correo = '$correo'");
-                if ($check_correo->rowCount() > 0) {
-                    $alerta = [
-                        "Alerta" => "simple",
-                        "Titulo" => "ocurrio un error inesperado",
-                        "texto" => "El correo ya se encuentra registrado, intente nuevamente!",
-                        "Tipo" => "error"
-                    ];
-                    echo json_encode($alerta);
-                    exit();
-                }
-            } else {
-                $alerta = [
-                    "Alerta" => "simple",
-                    "Titulo" => "ocurrio un error inesperado",
-                    "texto" => "Ingrese un correo valido!",
-                    "Tipo" => "error"
-                ];
-                echo json_encode($alerta);
-                exit();
-            }
-        }
 
         /* validamos contraseñas para actualizar (cambair contraseñas)  */
         if ($_POST['Password_up'] != "" && $_POST['PasswordConfirm_up'] != "") {
@@ -798,8 +488,6 @@ class userController extends userModel
                 }
                 $password = mainModel::encryption($_POST['Password_up']);
             }
-        } else {
-            $password = $campos['us_password_hash'];
         }
 
         /* comprovar credenciales para actualizar datos de usuarios */
@@ -843,17 +531,13 @@ class userController extends userModel
 
         $datos_usuario_up = [
             "Nombres" => $nombres,
-            "ApellidoPaterno" => $apellido_paterno,
-            "ApellidoMaterno" => $apellido_materno,
+            "Apellidos" => $apellidos,
             "Carnet" => $carnet,
             "Telefono" => $telefono,
             "Correo" => $correo,
             "Direccion" => $direccion,
             "UsuarioName" => $username,
             "Password" => $password,
-            "Estado" => $estado,
-            "Sucursal" => $sucursal,
-            "Rol" => $rol,
             "Id" => $id
         ];
 

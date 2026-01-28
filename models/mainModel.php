@@ -113,50 +113,86 @@ class mainModel
     /* -----------------------------------------funcion paginador de tablas--------------------------------------------- */
     protected static function paginador_tablas($pagina, $Npaginas, $url, $botones)
     {
-        $tabla = '<nav aria-label="Page navigation example">
-                        <ul class="custom-pagination">';
+        $tabla = '<nav aria-label="Page navigation example" class="pagination-container">
+                    <ul class="pagination justify-content-center flex-wrap">';
+
+        // Botón "Anterior" y "<<" (flecha doble izquierda)
         if ($pagina == 1) {
-            $tabla .= '<li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Previous</a>
-                        </li>';
+            $tabla .= '<li class="page-item disabled" aria-disabled="true">
+                        <span class="page-link" aria-hidden="true">
+                            <ion-icon name="chevron-back-circle-outline"></ion-icon>
+                        </span>
+                      </li>';
         } else {
             $tabla .= '<li class="page-item">
-                            <a class="page-link" href="' . $url . ($pagina - 1) . '/" tabindex="-1">Previous</a>
-                        </li>
-                        
-                        ';
+                        <a class="page-link pagination-link" href="#" data-page="' . ($pagina - 1) . '" aria-label="Anterior">
+                            <ion-icon name="chevron-back-circle-outline"></ion-icon>
+                        </a>
+                      </li>';
         }
 
-
-        $ci = 0;
-        for ($i = $pagina; $i <= $Npaginas; $i++) {
-            if ($i >= $botones) {
-                break;
+        // Calcular el rango de números de página a mostrar (máximo 5)
+        $rango = 5;
+        $mitad = floor($rango / 2);
+        
+        // Determinar el inicio y fin del rango
+        if ($Npaginas <= $rango) {
+            // Si hay pocas páginas, mostrar todas
+            $inicio = 1;
+            $fin = $Npaginas;
+        } else {
+            // Si hay muchas páginas, centrar en la página actual
+            $inicio = $pagina - $mitad;
+            $fin = $pagina + $mitad;
+            
+            // Ajustar si nos salimos de los límites
+            if ($inicio < 1) {
+                $fin = $fin + (1 - $inicio);
+                $inicio = 1;
             }
+            if ($fin > $Npaginas) {
+                $inicio = $inicio - ($fin - $Npaginas);
+                $fin = $Npaginas;
+                if ($inicio < 1) {
+                    $inicio = 1;
+                }
+            }
+        }
 
+        // Mostrar números de página
+        for ($i = $inicio; $i <= $fin; $i++) {
             if ($pagina == $i) {
-                $tabla .= '<li class="page-item active"><a class="page-link" href="' . $url . $i . '/">' . $i . '</a></li>';
+                $tabla .= '<li class="page-item active" aria-current="page">
+                            <span class="page-link">
+                                ' . $i . '
+                                <span class="sr-only">(current)</span>
+                            </span>
+                          </li>';
             } else {
-                $tabla .= '<li class="page-item"><a class="page-link" href="' . $url . $i . '/">' . $i . '</a></li>';
+                $tabla .= '<li class="page-item">
+                            <a class="page-link pagination-link" href="#" data-page="' . $i . '">' . $i . '</a>
+                          </li>';
             }
-            $ci++;
         }
 
+        // Botón "Siguiente" y ">>" (flecha doble derecha)
         if ($pagina == $Npaginas) {
-            $tabla .= '<li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Next</a>
-                        </li>';
+            $tabla .= '<li class="page-item disabled" aria-disabled="true">
+                        <span class="page-link" aria-hidden="true">
+                            <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+                        </span>
+                      </li>';
         } else {
             $tabla .= '<li class="page-item">
-                            <a class="page-link" href="' . $url . ($pagina + 1) . '/" tabindex="-1">Next</a>
-                        </li>
-                        
-                        ';
+                        <a class="page-link pagination-link" href="#" data-page="' . ($pagina + 1) . '" aria-label="Siguiente">
+                            <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+                        </a>
+                      </li>';
         }
-        $tabla .= ' </ul>
-                    </nav>';
+
+        $tabla .= '</ul></nav>';
         return $tabla;
-    } 
+    }
 
     
     /* ------------------------------ obtener informacion de sucursales y roles para usuario----------------------------------- */

@@ -14,19 +14,21 @@
         <small><?php echo isset($_SESSION['apellido_paterno_smp']) ? $_SESSION['apellido_paterno_smp'] : 'Administrador'; ?></small>
     </div>
     
-    <!-- Menú -->
-    <div class="sidebar-menu">
-        <a href="<?php echo SERVER_URL; ?>dashboard/" class="menu-item" data-page="dashboard">
-            <span class="menu-icon"><ion-icon name="speedometer-outline"></ion-icon></span>
-            <span>Dashboard</span>
-        </a>
-        
-        <a href="<?php echo SERVER_URL; ?>productos/" class="menu-item" data-page="productos">
+    <!-- Contenido principal del sidebar -->
+    <div class="sidebar-content">
+        <!-- Menú principal con scroll -->
+        <div class="sidebar-menu">
+            <a href="<?php echo SERVER_URL; ?>dashboard/" class="menu-item" data-page="dashboard">
+                <span class="menu-icon"><ion-icon name="speedometer-outline"></ion-icon></span>
+                <span>Dashboard</span>
+            </a>
+            
+        <a href="<?php echo SERVER_URL; ?>index.php?view=productos" class="menu-item" data-page="productos">
             <span class="menu-icon"><ion-icon name="cube-outline"></ion-icon></span>
             <span>Productos</span>
         </a>
         
-        <a href="<?php echo SERVER_URL; ?>servicios/" class="menu-item" data-page="servicios">
+        <a href="<?php echo SERVER_URL; ?>index.php?view=servicios" class="menu-item" data-page="servicios">
             <span class="menu-icon"><ion-icon name="construct-outline"></ion-icon></span>
             <span>Servicios</span>
         </a>
@@ -36,19 +38,20 @@
             <span>Noticias</span>
         </a>
         
-        <a href="<?php echo SERVER_URL; ?>mensaje/" class="menu-item" data-page="mensaje">
+        <a href="<?php echo SERVER_URL; ?>index.php?view=mensaje" class="menu-item" data-page="mensaje">
             <span class="menu-icon"><ion-icon name="mail-outline"></ion-icon></span>
             <span>Mensajes</span>
         </a>
+            
+            <a href="<?php echo SERVER_URL; ?>pagina/" class="menu-item" data-page="pagina">
+                <span class="menu-icon"><ion-icon name="globe-outline"></ion-icon></span>
+                <span>Página</span>
+            </a>
+        </div>
         
-        <a href="<?php echo SERVER_URL; ?>pagina/" class="menu-item" data-page="pagina">
-            <span class="menu-icon"><ion-icon name="globe-outline"></ion-icon></span>
-            <span>Página</span>
-        </a>
-        
-        <div class="separator"></div>
-        
-        <div class="menu-footer">
+        <!-- Perfil siempre en la parte inferior -->
+        <div class="sidebar-footer">
+            <div class="separator"></div>
             <div class="has-submenu">
                 <button class="menu-item" id="btn-perfil" data-page="perfil">
                     <span class="menu-icon"><ion-icon name="person-circle-outline"></ion-icon></span>
@@ -83,6 +86,11 @@
         const submenuPerfil = document.getElementById('submenu-perfil');
         if (btnPerfil && submenuPerfil) {
             btnPerfil.addEventListener('click', function() {
+                // Si el sidebar está colapsado en escritorio, expandirlo
+                if (window.innerWidth > 991.98 && body.classList.contains('sidebar-collapsed')) {
+                    body.classList.remove('sidebar-collapsed');
+                }
+                
                 submenuPerfil.classList.toggle('show');
                 btnPerfil.classList.toggle('open');
             });
@@ -95,9 +103,26 @@
                 if (window.innerWidth > 991.98) {
                     // Desktop view: toggle collapsed class
                     body.classList.toggle('sidebar-collapsed');
+                    
+                    // Ocultar todos los submenus al colapsar el sidebar
+                    if (body.classList.contains('sidebar-collapsed')) {
+                        const submenus = document.querySelectorAll('.submenu.show');
+                        const menuItems = document.querySelectorAll('.menu-item.open');
+                        
+                        submenus.forEach(submenu => submenu.classList.remove('show'));
+                        menuItems.forEach(item => item.classList.remove('open'));
+                    }
                 } else {
                     // Mobile view: toggle off-canvas
                     sidebar.classList.toggle('show');
+                }
+            });
+            
+            // Detectar cambios de tamaño de ventana para ajustar automáticamente
+            window.addEventListener('resize', function() {
+                if (window.innerWidth <= 991.98) {
+                    // En tablets y móviles, sidebar se oculta automáticamente
+                    body.classList.remove('sidebar-collapsed');
                 }
             });
 

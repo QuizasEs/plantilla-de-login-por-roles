@@ -7,10 +7,6 @@ require_once "./controllers/userController.php";
 /* instanciamos controlador usuariosS */
 $ins_usuario = new userController();
 
-$datos_rol = $ins_usuario->data_rol_list_controller("Multiple", 0);
-$datos_sucursal = $ins_usuario->data_sucursal_list_controller("Multiple", 0);
-
-
 ?>
 <div class="title">
     <h1>Registro de usuarios</h1>
@@ -20,88 +16,40 @@ $datos_sucursal = $ins_usuario->data_sucursal_list_controller("Multiple", 0);
     <form class="form-registro-usuario FormularioAjax" action="<?php echo SERVER_URL; ?>ajax/userAjax.php" method="POST" data-form="save" autocomplete="off">
 
 
-        <!-- DATOS PERSONALES -->
+        <!-- DATOS DEL USUARIO -->
         <div class="form-title">
-            <h3>datos personales</h3>
+            <h3>datos del usuario</h3>
         </div>
         <div class="form-group">
             <div class="form-bloque">
                 <label for="">NOMBRES*</label>
-                <input type="text" name="Nombres_reg" placeholder="ingresar nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,100}" maxlength="100" required>
+                <input type="text" name="Nombres_reg" placeholder="ingresar nombres" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,120}" maxlength="120" required>
             </div>
             <div class="form-bloque">
-                <label for="">APELLIDO PATERNO*</label>
-                <input type="text" name="ApellidoPaterno_reg" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,100}" maxlength="100" placeholder="ingresar apellido paterno" required>
-            </div>
-            <div class="form-bloque">
-                <label for="">APELLIDO MATERNO*</label>
-                <input type="text" name="ApellidoMaterno_reg" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,100}" maxlength="100" placeholder="ingesar apellido materno" required>
+                <label for="">APELLIDOS*</label>
+                <input type="text" name="Apellidos_reg" placeholder="ingresar apellidos" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,200}" maxlength="200" required>
             </div>
         </div>
 
         <div class="form-group">
-
-
             <div class="form-bloque">
-                <label for="">NUMERO DE CARNET*</label>
-                <input type="text" name="Carnet_reg" pattern="[0-9]{6,20}" maxlength="20" placeholder="ingresar número de carnet" required>
+                <label for="">CORREO ELECTRÓNICO</label>
+                <input type="email" name="Correo_reg" maxlength="120" placeholder="ingresar correo electrónico">
             </div>
-            <div class="form-bloque">
-                <label for="">TELEFONO O CELULAR PERSONAL</label>
-                <input type="text" name="Telefono_reg" pattern="[0-9]{6,20}" maxlength="12" placeholder="ingresar telefono o celular" required>
-            </div>
-            <div class="form-bloque">
-                <label for="">DIRECCION DE CORREO ELECTRONICO</label>
-                <input type="email" name="Correo_reg" maxlength="100" placeholder="ingresar correo">
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <div class="form-bloque">
-                <label for="">DIRECCION DE VIVIENDA</label>
-                <input type="text" name="Direccion_reg" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ().,#\/]{3,200}" maxlength="200" placeholder="ingresar direccion" required>
-            </div>
-        </div>
-
-        <!-- DATOS DE USAURIO  -->
-
-        <div class="form-title">
-            <h3>datos de usuario</h3>
-        </div>
-        <div class="form-group">
             <div class="form-bloque">
                 <label for="">NOMBRE DE USUARIO*</label>
-                <input type="text" name="UsuarioName_reg" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ_]{3,100}" maxlength="100" placeholder="ingresar nombre de usuario" required>
-            </div>
-            <div class="form-bloque">
-                <label for="">CONTRASEÑA*</label>
-                <input type="password" name="Password_reg" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9@$!%*?&._#\]{3,100}" maxlength="100" placeholder="ingresar contraseña" required>
-            </div>
-            <div class="form-bloque">
-                <label for="">CONTRASEÑA CONFIRMACION*</label>
-                <input type="password" name="PasswordConfirm_reg" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9@$!%*?&._#\]{3,100}" maxlength="100" placeholder="confirmar contraseña" required>
+                <input type="text" name="UsuarioName_reg" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ_]{3,80}$" maxlength="80" placeholder="ingresar nombre de usuario" required>
             </div>
         </div>
-        <div class="form-group">
 
+        <div class="form-group">
             <div class="form-bloque">
-                <label for="">ASIGNAR SUCURSAL</label>
-                <select class="select-style" name="Sucursal_reg">
-                    <option value="">SELECCIONAR</option>
-                    <?php foreach ($datos_sucursal as $sucursal) { ?>
-                        <option value="<?php echo $sucursal['su_id'];?>"><?php echo $sucursal['su_nombre']?></option>
-                    <?php } ?>
-                </select>
+                <label for="">CONTRASEÑA*</label>
+                <input type="password" name="Password_reg" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9@$!%*?&._#\]{3,255}" maxlength="255" placeholder="ingresar contraseña" required>
             </div>
             <div class="form-bloque">
-                <label for="">ASIGNAR ROL</label>
-                <select class="select-style" name="Rol_reg">
-                    <option value="">SELECCIONAR</option>
-                    <?php foreach ($datos_rol as $rol) { ?>
-                        <option value="<?php echo $rol['ro_id']; ?>"><?php echo $rol['ro_nombre'] ?></option>
-                    <?php } ?>
-                </select>
+                <label for="">CONFIRMAR CONTRASEÑA*</label>
+                <input type="password" name="PasswordConfirm_reg" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9@$!%*?&._#\]{3,255}" maxlength="255" placeholder="confirmar contraseña" required>
             </div>
         </div>
         <div class="form-buttons">

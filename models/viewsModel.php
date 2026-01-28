@@ -6,8 +6,9 @@
             $listaBlanca=[
                 "dashboard","usuarioRegistro",
                 "categoriaLista","laboratorioLista",
-                "presentacionLista","usuarioLista",
-                "usuarioActualizar",""
+                "usuarioLista",
+                "usuarioActualizar","productos",
+                "servicios","mensaje"
             ];
 
             if(in_array($vistas,$listaBlanca)){

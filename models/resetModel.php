@@ -4,7 +4,7 @@ require_once "mainModel.php";
 class resetModel extends mainModel {
     /* Modelo para enviar token de recuperación */
     protected static function enviar_token_model($email) {
-        $sql = mainModel::conectar()->prepare("SELECT us_id, us_username FROM usuarios WHERE us_correo = :Email AND us_estado = 1");
+        $sql = mainModel::conectar()->prepare("SELECT us_id, us_username FROM usuarios WHERE us_correo = :Email");
         $sql->bindParam(":Email", $email);
         $sql->execute();
         return $sql;
@@ -22,7 +22,7 @@ class resetModel extends mainModel {
 
     /* Modelo para verificar token */
     protected static function verificar_token_model($token) {
-        $sql = mainModel::conectar()->prepare("SELECT us_id FROM usuarios WHERE us_token_recuperacion = :Token AND us_token_expiracion > NOW() AND us_estado = 1");
+        $sql = mainModel::conectar()->prepare("SELECT us_id FROM usuarios WHERE us_token_recuperacion = :Token AND us_token_expiracion > NOW()");
         $sql->bindParam(":Token", $token);
         $sql->execute();
         return $sql;
@@ -30,7 +30,7 @@ class resetModel extends mainModel {
 
     /* Modelo para obtener contraseña actual */
     protected static function get_current_password_model($id) {
-        $sql = mainModel::conectar()->prepare("SELECT us_password_hash FROM usuarios WHERE us_id = :Id AND us_estado = 1");
+        $sql = mainModel::conectar()->prepare("SELECT us_password_hash FROM usuarios WHERE us_id = :Id");
         $sql->bindParam(":Id", $id);
         $sql->execute();
         return $sql;

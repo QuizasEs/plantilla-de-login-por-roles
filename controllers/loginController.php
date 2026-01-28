@@ -72,8 +72,8 @@ class loginController extends loginModel
             $_SESSION['id_smp'] = $row['us_id'];
             $_SESSION['nombre_smp'] = $row['us_nombres'];
             $_SESSION['usuario_smp'] = $row['us_username'];
-            $_SESSION['apellido_paterno_smp'] = $row['us_apellido_paterno'];
-            $_SESSION['apellido_materno_smp'] = $row['us_apellido_materno'];
+            $_SESSION['apellido_paterno_smp'] = $row['us_apellidos'];
+            $_SESSION['apellido_materno_smp'] = $row['us_apellidos'];
             $_SESSION['sucursal_smp'] = $row['su_id'];
             /*$_SESSION[''] = $row[''];
             $_SESSION[''] = $row['']; */

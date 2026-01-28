@@ -1,85 +1,5 @@
-// ===================================================
-// 🌓 MODO OSCURO
-// ===================================================
-(function () {
-    const toggle = document.querySelector('#darkModeToggleInput');
-    const body = document.body;
 
-    if (toggle && body) {
-        // Inicializar estado
-        loadDarkMode();
 
-        // Detectar cambios
-        toggle.addEventListener('change', () => {
-            body.classList.toggle('dark');
-            storeDarkMode(body.classList.contains('dark'));
-        });
-    }
-
-    function loadDarkMode() {
-        const darkmode = localStorage.getItem('dark') === 'true';
-        body.classList.toggle('dark', darkmode);
-        if (toggle) toggle.checked = darkmode;
-    }
-
-    function storeDarkMode(value) {
-        localStorage.setItem('dark', value);
-    }
-})();
-
-// ===================================================
-// 📂 DESPLIEGUE DE SUBMENÚS EN SIDEBAR
-// ===================================================
-(function () {
-    const menuItems = document.querySelectorAll(".sidebar .menu-item");
-
-    if (menuItems.length > 0) {
-        menuItems.forEach(item => {
-            item.addEventListener("click", () => {
-                const parent = item.closest(".link");
-                if (!parent) return;
-
-                // Cerrar los demás enlaces abiertos
-                document.querySelectorAll(".sidebar .link.open").forEach(link => {
-                    if (link !== parent) link.classList.remove("open");
-                });
-
-                // Alternar el actual
-                parent.classList.toggle("open");
-            });
-        });
-    }
-})();
-
-// ===================================================
-// 🍔 BOTÓN HAMBURGUESA (mostrar/ocultar sidebar)
-// ===================================================
-(function () {
-    const hamburguesa = document.querySelector('.hamburguesa');
-    const sidebar = document.querySelector('.sidebar');
-
-    if (hamburguesa && sidebar) {
-        hamburguesa.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-
-            // Detectar si está colapsado y aplicar inline styles solo si existen
-            if (!sidebar.classList.contains('collapsed')) {
-                if (sidebar.style) {
-                    sidebar.style.transform = 'translateX(0)';
-                    sidebar.style.width = '250px';
-                    sidebar.style.padding = '10px 2px';
-                }
-            } else {
-                if (sidebar.style) {
-                    sidebar.style.transform = 'translateX(-300px)';
-                    sidebar.style.width = '0';
-                    sidebar.style.padding = '0';
-                    sidebar.style.border = 'none';
-                }
-            }
-        });
-    }
-})();
 
 
 // ===================================================
@@ -119,4 +39,126 @@
     } else {
         console.warn("⚠️ ECharts no está definido. Asegúrate de cargar la librería antes de este script.");
     }
+})();
+
+
+
+
+// ===================================================
+// 📄 PAGINACIÓN SIN RECARGAR PÁGINA
+// ===================================================
+(function () {
+    // Delegar eventos para los enlaces de paginación
+    document.addEventListener('click', function (e) {
+        const target = e.target.closest('.pagination-link');
+        if (target) {
+            e.preventDefault();
+            const page = target.getAttribute('data-page');
+            if (page) {
+                handlePagination(page);
+            }
+        }
+    });
+
+    // Función para manejar la paginación
+    function handlePagination(page) {
+        // Obtener la URL base de la página actual
+        const currentUrl = window.location.href;
+        const baseUrl = currentUrl.split('?')[0].split('#')[0];
+        
+        // Construir la nueva URL
+        const newUrl = baseUrl.replace(/\/\d+\/?$/, '') + '/' + page + '/';
+        
+        // Realizar la solicitud AJAX
+        fetch(newUrl, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la solicitud: ' + response.status);
+            }
+            return response.text();
+        })
+        .then(html => {
+            // Crear un contenedor temporal para analizar el HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Obtener el contenido de la tabla y la paginación
+            const newTable = doc.querySelector('.table-container');
+            const newPagination = doc.querySelector('.pagination-container');
+            
+            if (newTable && newPagination) {
+                // Actualizar el contenido
+                document.querySelector('.table-container').innerHTML = newTable.innerHTML;
+                document.querySelector('.pagination-container').innerHTML = newPagination.innerHTML;
+                
+                // Actualizar la URL sin recargar la página
+                history.pushState({ page: page }, '', newUrl);
+                
+                // Mostrar mensaje de éxito
+                showNotification('Página ' + page + ' cargada exitosamente', 'success');
+            } else {
+                throw new Error('No se encontró contenido de tabla o paginación en la respuesta');
+            }
+        })
+        .catch(error => {
+            console.error('Error en la paginación:', error);
+            showNotification('Error al cargar la página: ' + error.message, 'error');
+        });
+    }
+
+    // Función para mostrar notificaciones
+    function showNotification(message, type) {
+        // Crear el elemento de notificación
+        const notification = document.createElement('div');
+        notification.className = 'notification notification-' + type;
+        notification.textContent = message;
+        
+        // Estilos básicos para la notificación
+        notification.style.position = 'fixed';
+        notification.style.top = '20px';
+        notification.style.right = '20px';
+        notification.style.padding = '15px 25px';
+        notification.style.borderRadius = '5px';
+        notification.style.zIndex = '9999';
+        notification.style.opacity = '0';
+        notification.style.transition = 'opacity 0.3s ease';
+        
+        // Colores según el tipo
+        if (type === 'success') {
+            notification.style.backgroundColor = '#28a745';
+            notification.style.color = '#fff';
+        } else if (type === 'error') {
+            notification.style.backgroundColor = '#dc3545';
+            notification.style.color = '#fff';
+        }
+        
+        // Añadir al DOM
+        document.body.appendChild(notification);
+        
+        // Animar aparición
+        setTimeout(() => {
+            notification.style.opacity = '1';
+        }, 10);
+        
+        // Eliminar después de 3 segundos
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    // Manejar el botón de retroceso del navegador
+    window.addEventListener('popstate', function (event) {
+        if (event.state && event.state.page) {
+            // Si el estado tiene información de página, podrías recargar el contenido
+            // Por ahora, simplemente recargamos la página para asegurar consistencia
+            location.reload();
+        }
+    });
 })();
