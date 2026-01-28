@@ -12,9 +12,9 @@
 
             if(in_array($vistas,$listaBlanca)){
                 /* preguntamos si la vista a la que se quiere acceder existe dentro de los archivos */
-                if(is_file("./views/content/".$vistas."-view.php")){
+                if(is_file("./views/private/".$vistas."-view.php")){
                     /* si existe asignamos la variable contenido la ruta de la vista */
-                    $contenido = "./views/content/".$vistas."-view.php";
+                    $contenido = "./views/private/".$vistas."-view.php";
                 } else{
                     /* si no mandamos ERROR */
                     $contenido = "404";

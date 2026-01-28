@@ -18,15 +18,13 @@
 
     <?php if ($vistas == "login" || $vistas == "404" || $vistas == "reset" || $vistas == "home") {
         if($vistas == "home"){
-            require_once "./views/content/home-view.php";
+            require_once "./views/public/home-view.php";
         }else{
-            require_once "./views/content/" . $vistas . "-view.php";
+            require_once "./views/public/" . $vistas . "-view.php";
         }
     } else {
         /* inicializa sesion */
         session_start(['name' => 'SMP']);
-        include_once "inc/header.php";
-
         require_once "./controllers/loginController.php";
         $lc = new loginController();
         if (
@@ -43,6 +41,8 @@
         <main>
             <!---------------------------------------------sidebar--------------------------------------------------->
             <?php include_once "inc/sidebar.php"; ?>
+            <!---------------------------------------------navbar--------------------------------------------------->
+            <?php include_once "inc/navbar.php"; ?>
             <!---------------------------------------------Cuerpo principal--------------------------------------------------->
             <?php 
             /* iniciamos controller usuario */
@@ -50,10 +50,10 @@
             $ins_usuario = new userController();
             ?>
             <div class="main-content">
-            <!--------------------------------------------- contenido de platillas y vistas--------------------------------------------------->
-                <?php include_once $vistas; ?>
-
-
+                <div class="container-fluid p-3 p-md-4">
+                    <!--------------------------------------------- contenido de platillas y vistas--------------------------------------------------->
+                    <?php include_once $vistas; ?>
+                </div>
             </div>
 
         </main>
@@ -67,7 +67,7 @@
     include_once "inc/script.php";
 
 
-    include_once "inc/footer.php";
+    /* include_once "inc/footer.php"; */
     ?>
 
 </body>

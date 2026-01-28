@@ -1,12 +1,27 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Logout button from navbar
         const btn_salir = document.querySelector(".btn-exit-system");
+        // Logout link from navbar
+        const logoutLink = document.querySelector('a[href*="logout"]');
 
-        if (!btn_salir) return; // Evita errores si el botón no existe
+        // Handle old logout button (if exists)
+        if (btn_salir) {
+            btn_salir.addEventListener('click', (e) => {
+                e.preventDefault();
+                confirmarLogout();
+            });
+        }
 
-        btn_salir.addEventListener('click', (e) => {
-            e.preventDefault();
+        // Handle new navbar logout link
+        if (logoutLink) {
+            logoutLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                confirmarLogout();
+            });
+        }
 
+        function confirmarLogout() {
             Swal.fire({
                 title: '¿Estás seguro de cerrar sesión?',
                 text: 'Tu sesión se cerrará y saldrás del sistema.',
@@ -47,6 +62,6 @@
                         });
                 }
             });
-        });
+        }
     });
 </script>
