@@ -121,7 +121,7 @@ class loginController extends loginModel
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "Ocurrio un error inesperado",
-                "Texto" => "No se pudo serrar la sesion del sistema",
+                "texto" => "No se pudo serrar la sesion del sistema",
                 "Tipo" => "error"
             ];
         }

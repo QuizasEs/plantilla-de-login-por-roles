@@ -100,6 +100,15 @@ class mainModel
         }
     }
 
+    /* --------------------------------------funcion para contar registros------------------------------------------------ */
+    protected static function contar_registros($tabla, $campo, $valor)
+    {
+        $sql = self::conectar()->prepare("SELECT $campo FROM $tabla WHERE $campo = :VALOR");
+        $sql->bindParam(":VALOR", $valor);
+        $sql->execute();
+        return $sql->rowCount();
+    }
+
     /* -----------------------------------funcion para verificar las fechas --------------------------------------------------- */
     protected static function verificar_fecha($fecha)
     {
@@ -115,6 +124,22 @@ class mainModel
     {
         $tabla = '<nav aria-label="Page navigation example" class="pagination-container">
                     <ul class="pagination justify-content-center flex-wrap">';
+
+        // Validación para cuando no existen registros
+        if ($Npaginas == 0) {
+            $tabla .= '<li class="page-item disabled" aria-disabled="true">
+                        <span class="page-link" aria-hidden="true">
+                            <ion-icon name="chevron-back-circle-outline"></ion-icon>
+                        </span>
+                      </li>
+                      <li class="page-item disabled" aria-disabled="true">
+                        <span class="page-link" aria-hidden="true">
+                            <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+                        </span>
+                      </li>';
+            $tabla .= '</ul></nav>';
+            return $tabla;
+        }
 
         // Botón "Anterior" y "<<" (flecha doble izquierda)
         if ($pagina == 1) {
@@ -192,6 +217,100 @@ class mainModel
 
         $tabla .= '</ul></nav>';
         return $tabla;
+    }
+
+    /* -----------------------------------------funcion para subir imagenes--------------------------------------------- */
+    protected static function subir_imagen($file_input_name, $directorio_destino, $campo_nombre, $campo_extension = null)
+    {
+        $resultado = [
+            'exito' => false,
+            'nombre_archivo' => '',
+            'mensaje' => ''
+        ];
+
+        // Verificar si se seleccionó una imagen
+        if (!isset($_FILES[$file_input_name]) || $_FILES[$file_input_name]['name'] == "" || $_FILES[$file_input_name]['size'] <= 0) {
+            $resultado['mensaje'] = 'No se seleccionó ningún archivo';
+            return $resultado;
+        }
+
+        // Crear directorio si no existe
+        if (!file_exists($directorio_destino)) {
+            if (!mkdir($directorio_destino, 0777, true)) {
+                $resultado['mensaje'] = 'Error al crear el directorio de imágenes';
+                return $resultado;
+            }
+        }
+
+        // Mover el archivo temporal al directorio destino
+        if (!move_uploaded_file($_FILES[$file_input_name]['tmp_name'], $directorio_destino . $_FILES[$file_input_name]['name'])) {
+            $resultado['mensaje'] = 'No se pudo subir la imagen al sistema';
+            return $resultado;
+        }
+
+        // Generar nombre único para el archivo
+        $nombre_original = $_FILES[$file_input_name]['name'];
+        $nombre_encriptado = self::encryption($nombre_original);
+        $nombre_limpio = str_replace(".", "_", $nombre_encriptado);
+        $nombre_unico = $nombre_limpio . "_" . rand(0, 100);
+        
+        // Determinar la extensión del archivo
+        if ($campo_extension === null) {
+            $extension = pathinfo($nombre_original, PATHINFO_EXTENSION);
+        } else {
+            $extension = $campo_extension;
+        }
+
+        $nombre_final = $nombre_unico . "." . $extension;
+
+        // Renombrar el archivo
+        if (!rename($directorio_destino . $nombre_original, $directorio_destino . $nombre_final)) {
+            // Si falla el renombrado, eliminar el archivo temporal
+            if (file_exists($directorio_destino . $nombre_original)) {
+                unlink($directorio_destino . $nombre_original);
+            }
+            $resultado['mensaje'] = 'No se pudo renombrar la imagen';
+            return $resultado;
+        }
+
+        $resultado['exito'] = true;
+        $resultado['nombre_archivo'] = $nombre_final;
+        $resultado['mensaje'] = 'Imagen subida exitosamente';
+        
+        return $resultado;
+    }
+
+    /* -----------------------------------------funcion para eliminar imagenes--------------------------------------------- */
+    protected static function eliminar_imagen($ruta_imagen, $directorio_base = "")
+    {
+        if (empty($ruta_imagen)) {
+            return true; // No hay imagen que eliminar
+        }
+
+        // Construir la ruta completa si se proporciona un directorio base
+        $ruta_completa = $directorio_base . $ruta_imagen;
+
+        // Verificar si el archivo existe
+        if (file_exists($ruta_completa)) {
+            // Cambiar permisos y eliminar
+            chmod($ruta_completa, 0777);
+            return unlink($ruta_completa);
+        }
+
+        return true; // Si no existe, consideramos que la eliminación fue exitosa
+    }
+
+    /* -----------------------------------------funcion para eliminar multiples imagenes--------------------------------------------- */
+    protected static function eliminar_multiples_imagenes($imagenes_array, $directorio_base = "")
+    {
+        $resultados = [];
+        
+        foreach ($imagenes_array as $imagen) {
+            $resultados[] = self::eliminar_imagen($imagen, $directorio_base);
+        }
+        
+        // Retornar true solo si todas las eliminaciones fueron exitosas
+        return !in_array(false, $resultados, true);
     }
 
     

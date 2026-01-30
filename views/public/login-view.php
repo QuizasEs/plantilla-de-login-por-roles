@@ -1,7 +1,18 @@
             <!---------------------------------------------login--------------------------------------------------->
             <div class="login-container">
-                <img src="<?php echo SERVER_URL; ?>views/image/background-logo.png" alt="">
+                <div class="slider-container">
+                    <div class="slides-container">
+                        <div class="slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Slide 1"></div>
+                        <div class="slide"><img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Slide 2"></div>
+                        <div class="slide"><img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Slide 3"></div>
+                        <div class="slide"><img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Slide 4"></div>
+                    </div>
+                </div>
+                
                 <div class="form-login-content">
+                    <div class="text-center">
+                        <img src="<?php echo SERVER_URL; ?>views/image/background-logo.png" alt="Logo" class="logo-login">
+                    </div>
                     <form action="" class="form-login" method="POST">
                         <h2 class="title-login">LOGIN</h2>
                         <div class="bloque-login">

@@ -1,5 +1,3 @@
-// selleccionamos todos los datos de formularios que tengasn de clase formularioajax
-const formularios_ajax = document.querySelectorAll(".FormularioAjax");
 
 function enviar_formulario_ajax(e) {
     e.preventDefault();
@@ -48,14 +46,14 @@ function enviar_formulario_ajax(e) {
     Swal.fire({
         title: '¿Estás seguro?',
         text: texto_alerta,
-        type: 'question',
+        icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Aceptar',
         cancelButtonText: 'Cancelar'
     }).then((result) => {
-        if (result.value) {
+        if (result.isConfirmed) {
             fetch(action, config)
                 .then(respuesta => respuesta.json())
                 .then(respuesta => {
@@ -65,9 +63,11 @@ function enviar_formulario_ajax(e) {
     });
 }
 
-// Asociar evento a cada formulario
-formularios_ajax.forEach(formulario => {
-    formulario.addEventListener("submit", enviar_formulario_ajax);
+// Asociar evento a cada formulario mediante delegación de eventos
+document.addEventListener("submit", function(e) {
+    if (e.target.matches(".FormularioAjax")) {
+        enviar_formulario_ajax.call(e.target, e);
+    }
 });
 
 // funcion para manera los mensajes de las alertas
